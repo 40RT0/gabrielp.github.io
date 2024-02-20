@@ -2,34 +2,71 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Salario</title>
+    <title>Binomial Probability Calculator</title>
 </head>
 <body>
 
 <script>
-    function calcularSalario() {
-        var h = parseFloat(prompt("Ingrese las horas trabajadas:"));
-        var s = parseFloat(prompt("Ingrese el salario por hora en COP:"));
-        var tsp = parseFloat(prompt("Ingrese la tasa de retención de Salud en %:"));
-        var tlp = parseFloat(prompt("Ingrese la tasa de riesgo laboral en %:"));
+    function funcion_probabilidad_masica_binomial(n, x, p) {
+        // Calcular el coeficiente binomial. Es decir, de n coger x.
+        let coeficiente_binomial = math.comb(n, x);
 
-        var tt = tsp + tlp;
-        var ts = tsp * 0.01;
-        var tl = tlp * 0.01;
+        // Calcular la función
+        let probabilidad = coeficiente_binomial * Math.pow(p, x) * Math.pow((1 - p), (n - x));
 
-        var rs = s * ts;
-        var rt = s * tl;
-        var dt = rt + rs;
-        var pn = s - dt;
-
-        alert("Horas trabajadas: " + h + "\nTarifa de pago: " + tt + "%\nSalario bruto: " + s +
-            "\n\nLa retención de salud es de " + rs + ".\nLa reducción laboral es de " + rt +
-            ".\nEl valor deducido es " + dt + " pesos.\nEl pago neto, entonces, es de " + pn + " pesos.");
+        return probabilidad; // Return devuelve la respuesta.
     }
 
-    // Llamamos a la función al cargar la página
-    calcularSalario();
+    function probabilidad_acumulativa_menor_o_igual(n, a, p) {
+        // Calcular P(X <= a)
+        let probabilidad_acumulativa = Array.from({length: a + 1}, (_, x) => funcion_probabilidad_masica_binomial(n, x, p)).reduce((a, b) => a + b, 0);
+        return probabilidad_acumulativa;
+    }
+
+    function probabilidad_acumulativa_entre(n, a, b, p) {
+        // Calcular P(a < X < b)
+        let probabilidad_acumulativa = Array.from({length: b - a}, (_, index) => funcion_probabilidad_masica_binomial(n, a + index + 1, p)).reduce((a, b) => a + b, 0);
+        return probabilidad_acumulativa;
+    }
+
+    function probabilidad_acumulativa_inclusiva(n, a, b, p) {
+        // Calcular P(a <= X <= b)
+        let probabilidad_acumulativa = Array.from({length: b - a + 1}, (_, index) => funcion_probabilidad_masica_binomial(n, a + index, p)).reduce((a, b) => a + b, 0);
+        return probabilidad_acumulativa;
+    }
+
+    function main() {
+        // Obtener la entrada del usuario
+        let p = parseFloat(prompt("Ingrese la probabilidad de éxito (p): "));
+        let n = parseInt(prompt("Ingrese el número de ensayos (n): "));
+        let x = parseInt(prompt("Ingrese el número de éxitos (x): "));
+
+        // Verificar la validez de la entrada
+        if (0 <= p <= 1 && n > 0 && 0 <= x <= n) {
+            // Calcular y mostrar el resultado para P(X = x)
+            let resultado = funcion_probabilidad_masica_binomial(n, x, p);
+            alert("La probabilidad de tener " + x + " éxitos en " + n + " ensayos es: " + resultado.toFixed(4));
+
+            // Calcular y mostrar el resultado para P(X <= x), P(a < X < b), P(a <= X <= b)
+            let acumulativa_menor_o_igual = probabilidad_acumulativa_menor_o_igual(n, x, p);
+            alert("P(X <= " + x + "): " + acumulativa_menor_o_igual.toFixed(4));
+
+            let a = parseInt(prompt("Ingrese el valor de a: "));
+            let b = parseInt(prompt("Ingrese el valor de b: "));
+
+            let acumulativa_entre = probabilidad_acumulativa_entre(n, a, b, p);
+            alert("P(" + a + " < X < " + b + "): " + acumulativa_entre.toFixed(4));
+
+            let acumulativa_inclusiva = probabilidad_acumulativa_inclusiva(n, a, b, p);
+            alert("P(" + a + " <= X <= " + b + "): " + acumulativa_inclusiva.toFixed(4));
+        } else {
+            alert("Entrada no válida. Por favor, ingrese valores válidos.");
+        }
+    }
+
+    main();
 </script>
 
 </body>
