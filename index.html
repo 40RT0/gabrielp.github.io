@@ -2,72 +2,80 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Binomial Probability Calculator</title>
+    <title>Simple Calculator</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        #calculator {
+            margin-top: 20px;
+        }
+        #result {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+        #happy-face {
+            font-size: 40px;
+            margin-top: 20px;
+        }
+        #additional-text {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
 
-<script>
-    function funcion_probabilidad_masica_binomial(n, x, p) {
-        // Calcular el coeficiente binomial. Es decir, de n coger x.
-        let coeficiente_binomial = math.comb(n, x);
+    <div id="calculator">
+        <input type="text" id="result" readonly>
+        <br>
+        <button onclick="appendValue('1')">1</button>
+        <button onclick="appendValue('2')">2</button>
+        <button onclick="appendValue('3')">3</button>
+        <button onclick="appendValue('+')">+</button>
+        <br>
+        <button onclick="appendValue('4')">4</button>
+        <button onclick="appendValue('5')">5</button>
+        <button onclick="appendValue('6')">6</button>
+        <button onclick="appendValue('-')">-</button>
+        <br>
+        <button onclick="appendValue('7')">7</button>
+        <button onclick="appendValue('8')">8</button>
+        <button onclick="appendValue('9')">9</button>
+        <button onclick="appendValue('*')">*</button>
+        <br>
+        <button onclick="appendValue('0')">0</button>
+        <button onclick="clearResult()">C</button>
+        <button onclick="calculateResult()">=</button>
+        <button onclick="appendValue('/')">/</button>
+    </div>
 
-        // Calcular la función
-        let probabilidad = coeficiente_binomial * Math.pow(p, x) * Math.pow((1 - p), (n - x));
+    <div id="happy-face">
+        &#128522;
+    </div>
 
-        return probabilidad; // Return devuelve la respuesta.
-    }
+    <div id="additional-text">
+        "Soy el Python" - Elmer Segundo
+    </div>
 
-    function probabilidad_acumulativa_menor_o_igual(n, a, p) {
-        // Calcular P(X <= a)
-        let probabilidad_acumulativa = Array.from({length: a + 1}, (_, x) => funcion_probabilidad_masica_binomial(n, x, p)).reduce((a, b) => a + b, 0);
-        return probabilidad_acumulativa;
-    }
-
-    function probabilidad_acumulativa_entre(n, a, b, p) {
-        // Calcular P(a < X < b)
-        let probabilidad_acumulativa = Array.from({length: b - a}, (_, index) => funcion_probabilidad_masica_binomial(n, a + index + 1, p)).reduce((a, b) => a + b, 0);
-        return probabilidad_acumulativa;
-    }
-
-    function probabilidad_acumulativa_inclusiva(n, a, b, p) {
-        // Calcular P(a <= X <= b)
-        let probabilidad_acumulativa = Array.from({length: b - a + 1}, (_, index) => funcion_probabilidad_masica_binomial(n, a + index, p)).reduce((a, b) => a + b, 0);
-        return probabilidad_acumulativa;
-    }
-
-    function main() {
-        // Obtener la entrada del usuario
-        let p = parseFloat(prompt("Ingrese la probabilidad de éxito (p): "));
-        let n = parseInt(prompt("Ingrese el número de ensayos (n): "));
-        let x = parseInt(prompt("Ingrese el número de éxitos (x): "));
-
-        // Verificar la validez de la entrada
-        if (0 <= p <= 1 && n > 0 && 0 <= x <= n) {
-            // Calcular y mostrar el resultado para P(X = x)
-            let resultado = funcion_probabilidad_masica_binomial(n, x, p);
-            alert("La probabilidad de tener " + x + " éxitos en " + n + " ensayos es: " + resultado.toFixed(4));
-
-            // Calcular y mostrar el resultado para P(X <= x), P(a < X < b), P(a <= X <= b)
-            let acumulativa_menor_o_igual = probabilidad_acumulativa_menor_o_igual(n, x, p);
-            alert("P(X <= " + x + "): " + acumulativa_menor_o_igual.toFixed(4));
-
-            let a = parseInt(prompt("Ingrese el valor de a: "));
-            let b = parseInt(prompt("Ingrese el valor de b: "));
-
-            let acumulativa_entre = probabilidad_acumulativa_entre(n, a, b, p);
-            alert("P(" + a + " < X < " + b + "): " + acumulativa_entre.toFixed(4));
-
-            let acumulativa_inclusiva = probabilidad_acumulativa_inclusiva(n, a, b, p);
-            alert("P(" + a + " <= X <= " + b + "): " + acumulativa_inclusiva.toFixed(4));
-        } else {
-            alert("Entrada no válida. Por favor, ingrese valores válidos.");
+    <script>
+        function appendValue(value) {
+            document.getElementById('result').value += value;
         }
-    }
 
-    main();
-</script>
+        function clearResult() {
+            document.getElementById('result').value = '';
+        }
+
+        function calculateResult() {
+            try {
+                document.getElementById('result').value = eval(document.getElementById('result').value);
+            } catch (error) {
+                document.getElementById('result').value = 'Error';
+            }
+        }
+    </script>
 
 </body>
 </html>
