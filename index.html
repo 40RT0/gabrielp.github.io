@@ -3,60 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Calculator</title>
+    <title>Statistical Calculators</title>
     <style>
         body {
             text-align: center;
             font-family: Arial, sans-serif;
         }
-        #calculator {
+        .calculator-container {
             margin-top: 20px;
         }
-        #result {
+        .calculator {
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .result {
             font-size: 24px;
             margin-top: 10px;
         }
-        #happy-face {
+        .happy-face {
             font-size: 40px;
             margin-top: 20px;
         }
-        #additional-text {
+        .additional-text {
             margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
-    <div id="calculator">
-        <input type="text" id="result" readonly>
-        <br>
-        <button onclick="appendValue('1')">1</button>
-        <button onclick="appendValue('2')">2</button>
-        <button onclick="appendValue('3')">3</button>
-        <button onclick="appendValue('+')">+</button>
-        <br>
-        <button onclick="appendValue('4')">4</button>
-        <button onclick="appendValue('5')">5</button>
-        <button onclick="appendValue('6')">6</button>
-        <button onclick="appendValue('-')">-</button>
-        <br>
-        <button onclick="appendValue('7')">7</button>
-        <button onclick="appendValue('8')">8</button>
-        <button onclick="appendValue('9')">9</button>
-        <button onclick="appendValue('*')">*</button>
-        <br>
-        <button onclick="appendValue('0')">0</button>
-        <button onclick="clearResult()">C</button>
-        <button onclick="calculateResult()">=</button>
-        <button onclick="appendValue('/')">/</button>
+    <div class="calculator-container">
+        <div class="calculator">
+            <h2>Simple Calculator</h2>
+            <input type="text" id="result" class="result" readonly>
+            <br>
+            <button onclick="appendValue('1')">1</button>
+            <button onclick="appendValue('2')">2</button>
+            <button onclick="appendValue('3')">3</button>
+            <button onclick="appendValue('+')">+</button>
+            <br>
+            <button onclick="appendValue('4')">4</button>
+            <button onclick="appendValue('5')">5</button>
+            <button onclick="appendValue('6')">6</button>
+            <button onclick="appendValue('-')">-</button>
+            <br>
+            <button onclick="appendValue('7')">7</button>
+            <button onclick="appendValue('8')">8</button>
+            <button onclick="appendValue('9')">9</button>
+            <button onclick="appendValue('*')">*</button>
+            <br>
+            <button onclick="appendValue('0')">0</button>
+            <button onclick="clearResult()">C</button>
+            <button onclick="calculateResult()">=</button>
+            <button onclick="appendValue('/')">/</button>
+        </div>
+
+        <div class="happy-face">&#128522;</div>
+
+        <div class="additional-text">
+            Soy el Python - Elmer Segundo
+        </div>
     </div>
 
-    <div id="happy-face">
-        &#128522;
+    <div class="calculator-container">
+        <div class="calculator">
+            <h2>Binomial Distribution Calculator</h2>
+            <label for="binomial-n">n:</label>
+            <input type="text" id="binomial-n">
+            <label for="binomial-p">p:</label>
+            <input type="text" id="binomial-p">
+            <label for="binomial-k">k:</label>
+            <input type="text" id="binomial-k">
+            <br>
+            <button onclick="calculateBinomial()">Calculate</button>
+            <div id="binomial-result" class="result"></div>
+        </div>
+
+        <div class="happy-face">&#128522;</div>
+
+        <div class="additional-text">
+            Soy el Python - Elmer Segundo
+        </div>
     </div>
 
-    <div id="additional-text">
-        "Soy el Python" - Elmer Segundo
+    <div class="calculator-container">
+        <div class="calculator">
+            <h2>Poisson Distribution Calculator</h2>
+            <label for="poisson-lambda">λ:</label>
+            <input type="text" id="poisson-lambda">
+            <label for="poisson-k">k:</label>
+            <input type="text" id="poisson-k">
+            <br>
+            <button onclick="calculatePoisson()">Calculate</button>
+            <div id="poisson-result" class="result"></div>
+        </div>
+
+        <div class="happy-face">&#128522;</div>
+
+        <div class="additional-text">
+            Soy el Python - Elmer Segundo
+        </div>
     </div>
 
     <script>
@@ -73,6 +118,50 @@
                 document.getElementById('result').value = eval(document.getElementById('result').value);
             } catch (error) {
                 document.getElementById('result').value = 'Error';
+            }
+        }
+
+        function calculateBinomial() {
+            const n = parseFloat(document.getElementById('binomial-n').value);
+            const p = parseFloat(document.getElementById('binomial-p').value);
+            const k = parseFloat(document.getElementById('binomial-k').value);
+            
+            if (!isNaN(n) && !isNaN(p) && !isNaN(k) && n >= 0 && p >= 0 && p <= 1 && k >= 0 && Number.isInteger(k)) {
+                const result = binomialDistribution(n, p, k);
+                document.getElementById('binomial-result').textContent = `P(X = ${k}) = ${result.toFixed(4)}`;
+            } else {
+                document.getElementById('binomial-result').textContent = 'Invalid input';
+            }
+        }
+
+        function calculatePoisson() {
+            const lambda = parseFloat(document.getElementById('poisson-lambda').value);
+            const k = parseFloat(document.getElementById('poisson-k').value);
+
+            if (!isNaN(lambda) && !isNaN(k) && lambda >= 0 && k >= 0 && Number.isInteger(k)) {
+                const result = poissonDistribution(lambda, k);
+                document.getElementById('poisson-result').textContent = `P(X = ${k}) = ${result.toFixed(4)}`;
+            } else {
+                document.getElementById('poisson-result').textContent = 'Invalid input';
+            }
+        }
+
+        function binomialDistribution(n, p, k) {
+            const q = 1 - p;
+            const binomialCoefficient = factorial(n) / (factorial(k) * factorial(n - k));
+            return binomialCoefficient * Math.pow(p, k) * Math.pow(q, n - k);
+        }
+
+        function poissonDistribution(lambda, k) {
+            const eToTheLambda = Math.exp(-lambda);
+            return (Math.pow(lambda, k) * eToTheLambda) / factorial(k);
+        }
+
+        function factorial(num) {
+            if (num === 0 || num === 1) {
+                return 1;
+            } else {
+                return num * factorial(num - 1);
             }
         }
     </script>
